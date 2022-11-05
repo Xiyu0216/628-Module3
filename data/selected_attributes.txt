@@ -1,0 +1,7 @@
+Family dinner:
+attributes.WiFi
+attributes.WheelchairAccessible
+attributes.DogsAllowed
+attributes.Alcohol
+attributes.GoodForKids
+attributes.RestaurantsGoodForGroups
