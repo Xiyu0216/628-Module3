@@ -1,17 +1,11 @@
 # 628-Module3
 ## Project information
-Team member:
-
-1.XIYU HAO (xhao33@wisc.edu)
-2.SHUWEI LIU (sliu777@wisc.edu)
-3.DUOHAN ZHANG (dzhang357@wisc.edu)
-4.XINYAN WANG (xwang2587@wisc.edu)
 
 Team member:
-1. Marwa Eltgani (eltgani@wisc.edu)
-2. Sheng Huang (shaung452@wisc.edu)
-3. Samach Sathitvudh (sathitvudh@wisc.edu)
-4. Xinyan Wang (xwang2587@wisc.edu)
+1. XIYU HAO (xhao33@wisc.edu)
+2. SHUWEI LIU (sliu777@wisc.edu)
+3. DUOHAN ZHANG (dzhang357@wisc.edu)
+4. XINYAN WANG (xwang2587@wisc.edu)
 
 The purpose of this project is to perform a modern statistical analysis from the **business** dataset. Our methodology includes:
 - **Exploratory Data Analysis**: to investigate the variables' distributions along with the outliers
