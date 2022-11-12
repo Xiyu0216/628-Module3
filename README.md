@@ -13,7 +13,7 @@ The purpose of this project is to perform a modern statistical analysis from the
 - **Statistical Model**: to construct a model that effectively infers and describes the variables based on the existing data. We also conduct the experiment to select the best model
 - **Model diagnostics**: to investigate the proposed model whether it is appropriate for ... using several plots and tests for model assumptions
 - **Model strengths and weaknesses**: to analyze the finalized model and its prediction performance. We also include the discussion for the improvement and future work
-- **Shiny App**: to develop a real-time web application and ... a based on our model
+- **Shiny App**: to develop a real-time web application based on our model
 
 ### Content
 #### data
