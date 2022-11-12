@@ -11,24 +11,19 @@ library(jsonlite)
 business <- stream_in(file("business.json"),pagesize = 10000)
 write.csv(business, file="business.csv")
 
-B_c1<-subset(business,business$state=="FL")
+B_c1<-subset(business,business$state=="FL") # Select the samples in state FL
 write.csv(B_c1, file="B_c1.csv")
 data<-read.csv("B_c1.csv",header = F)
 
 
-data<-subset(data,data[6]=="FL")
-B_c2<-data[-1]
+data<-data[-1]
+select<-c(1:11,20,22,27,28,29,33) # Variable selection
+data<-data[select]
+vname<-data[1,]
+data<-subset(data,data[5]=="FL")
+business_FL<-na.omit(data)
+names(business_FL)<-vname
+write.csv(business_FL, file="business_FL.csv", row.names= FALSE)
 
-B_c2<-B_c2[,c(1:11,20,22,27,28,29,33)]
-
-
-business_FL<-na.omit(B_c2)
-
-business_FL<-business_FL[-1,]
-
-names(business_FL)=c(	"business_id",	"name",	"address", "city",	"state",	"postal_code",	"latitude",	"longitude",	"stars",	"review_count",	"is_open",	"attributes.WiFi",	"attributes.WheelchairAccessible"	,"attributes.DogsAllowed",	"attributes.Alcohol",	"attributes.GoodForKids",	"attributes.RestaurantsGoodForGroups")
-
-
-write.csv(business_FL, file="business_FL.csv")
 ```
 
