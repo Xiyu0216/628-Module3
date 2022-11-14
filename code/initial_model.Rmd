@@ -1,0 +1,87 @@
+---
+title: "initial_model"
+author: "Duohan Zhang"
+date: "11/14/2022"
+output: html_document
+---
+
+
+
+# clean data
+```{r}
+# import data
+dat = read.csv("business_FL.csv")
+dat = dat[,9:17]
+#wifi 
+dat[,4][dat[,4] == "u'free'"] = "free"
+dat[,4][dat[,4] == "'free'"] = "free"
+dat[,4][dat[,4] == "u'no'"] = "no"
+dat[,4][dat[,4] == "'no'"] = "no"
+dat[,4][dat[,4] == "u'paid'"] = "paid"
+dat[,4][dat[,4] == "'paid'"] = "paid"
+
+colnames(dat) = c("stars", "review_counts", "is_open", "wifi", "wheelchair_accessible", "dog_allowed", "alcohol", "good_for_kids", "good_for_groups")
+# wheel chair
+dat[,5][dat[,5] == " 'street': False"] = "False"
+dat[,5][dat[,5] == " 'street': True"] = "True"
+dat[,5][dat[,5] == " 'street': None"] = "False"
+dat[,5][dat[,5] == " u'garage': False"] = "False"
+dat[,5][dat[,5] == " u'garage': None"] = "False"
+dat[,5][dat[,5] == " u'garage': True"] = "True"
+dat[,5][dat[,5] == " 'garage': False"] = "False"
+# group
+dat[,9][dat[,9] == " 'romantic': False"] = "False"
+dat[,9][dat[,9] == " 'classy': False"] = "False"
+dat[,9][dat[,9] == " u'casual': True"] = "True"
+dat[,9][dat[,9] == " u'casual': None"] = "False"
+dat[,9][dat[,9] == " 'romantic': None"] = "False"
+dat[,9][dat[,9] == " 'touristy': False"] = "False"
+```
+
+```{r}
+# wifi
+new_dat = dat
+new_dat[,4][new_dat[,4] == "free"] = 0.0
+new_dat[,4][new_dat[,4] == "paid"] = 1.0
+new_dat[,4][new_dat[,4] == "no"] = 2.0
+new_dat[,4] = as.numeric(new_dat[,4])
+cor.test(new_dat[,4], new_dat[,1], method = "pearson")
+```
+
+```{r}
+# wheelchair
+new_dat = dat
+new_dat[,5][new_dat[,5] == "False"] = 0.0
+new_dat[,5][new_dat[,5] == "True"] = 1.0
+new_dat[,5] = as.numeric(new_dat[,5])
+cor.test(new_dat[,5], new_dat[,1], method = "pearson")
+```
+
+```{r}
+# dog
+new_dat[,6][new_dat[,6] == "False"] = 0.0
+new_dat[,6][new_dat[,6] == "True"] = 1.0
+new_dat[,6] = as.numeric(new_dat[,6])
+cor.test(new_dat[,6], new_dat[,1], method = "pearson")
+```
+
+```{r}
+#kids
+new_dat[,8][new_dat[,8] == "False"] = 0.0
+new_dat[,8][new_dat[,8] == "True"] = 1.0
+new_dat[,8] = as.numeric(new_dat[,8])
+cor.test(new_dat[,8], new_dat[,1], method = "pearson")
+```
+
+```{r}
+#groups
+new_dat[,9][new_dat[,9] == "False"] = 0.0
+new_dat[,9][new_dat[,9] == "True"] = 1.0
+new_dat[,9] = as.numeric(new_dat[,9])
+cor.test(new_dat[,9], new_dat[,1], method = "pearson")
+```
+
+```{r}
+model1 = lm(stars ~ wheelchair_accessible + dog_allowed + good_for_kids + good_for_groups, data = dat)
+summary(model1)
+```
