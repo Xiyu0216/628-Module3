@@ -57,12 +57,13 @@ Chinese_restaurant<-Chinese[with(Chinese, grepl("Restaurant", restaurant_paste))
 
 
 
-Chinese_restaurant<-Chinese_restaurant[1:30] #Variable selection
+C_r<-Chinese_restaurant[1:30] #Variable selection
 
 # Replace missing values
-Chinese_restaurant$attributes.RestaurantsPriceRange2[is.na(Chinese_restaurant$attributes.RestaurantsPriceRange2)]<-0
-Chinese_restaurant[is.na(Chinese_restaurant)]<-"False"
-
+C_r$attributes.RestaurantsPriceRange2[is.na(C_r$attributes.RestaurantsPriceRange2)]<-0
+C_r[is.na(C_r)]<-"False"
+#Combine the selected variables with other attributes
+Chinese_restaurant<-cbind(C_r,Chinese_restaurant[31:50])
 write.csv(Chinese_restaurant,"Chinese_restaurant.csv",row.names= FALSE)
 
 
@@ -80,10 +81,15 @@ for (i in 2:length(c_restaurant)) {
   restaurant_paste<-paste(restaurant_paste,Korean[[c_restaurant[1,i]]])
 }
 Korean_restaurant<-Korean[with(Korean, grepl("Restaurant", restaurant_paste)),]
-Korean_restaurant<-Korean_restaurant[1:30] #Variable selection
-Korean_restaurant$attributes.RestaurantsPriceRange2[is.na(Korean_restaurant$attributes.RestaurantsPriceRange2)]<-0
-Korean_restaurant[is.na(Korean_restaurant)]<-"False"
-write.csv(Korean_restaurant,"Korean_restaurant.csv",row.names= FALSE)
 
+
+K_r<-Korean_restaurant[1:30] #Variable selection
+
+# Replace missing values
+K_r$attributes.RestaurantsPriceRange2[is.na(K_r$attributes.RestaurantsPriceRange2)]<-0
+K_r[is.na(K_r)]<-"False"
+#Combine the selected variables with other attributes
+Korean_restaurant<-cbind(K_r,Korean_restaurant[31:50])
+write.csv(Korean_restaurant,"Korean_restaurant.csv",row.names= FALSE)
 ```
 
