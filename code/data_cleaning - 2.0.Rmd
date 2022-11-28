@@ -1,0 +1,66 @@
+---
+title: "Untitled"
+author: "Group 10"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r echo=TRUE}
+business_FL<-read.csv("attributes.csv",header = F)
+business_FL<-business_FL[-1]
+c_name<-business_FL[1,] # Get colume names
+# Change the names with string ""
+for (i in 1:length(c_name)) {
+  if (c_name[1,i]==""){c_name[1,i]=i}  
+}
+names(business_FL)<-c_name
+#write.csv(business_FL, file="business_FL.csv", row.names= FALSE)
+# Extract Chinese restaurants
+# There is something wrong when .json is transformed into .csv, the extracting procedure will be more complicated than expected
+# Select the rows contain "Chinese" or "China"
+# Generally the key words are in names or categories
+# But some of the categories is not in the correct column in the transformed data set due to some unknown reasons
+c_name_Chinese<-c_name[grepl(pattern="Chinese|China",business_FL)]
+Chinese_paste<-paste(business_FL[[c_name_Chinese[1,1]]])
+for (i in 2:length(c_name_Chinese)) {
+  Chinese_paste<-paste(Chinese_paste,business_FL[[c_name_Chinese[1,i]]])
+}
+Chinese<-business_FL[with(business_FL, grepl("Chinese|China", Chinese_paste)),]
+# Select the rows contain "Restaurant"
+# The method and the reason are the same as what we do in selecting "Chinese" or "China"
+c_restaurant<-c_name[grepl(pattern="Restaurant",Chinese)]
+restaurant_paste<-paste(Chinese[[c_restaurant[1,1]]])
+for (i in 2:length(c_restaurant)) {
+  restaurant_paste<-paste(restaurant_paste,Chinese[[c_restaurant[1,i]]])
+}
+Chinese_restaurant<-Chinese[with(Chinese, grepl("Restaurant", restaurant_paste)),]
+C_r<-Chinese_restaurant[1:50] #Variable selection
+# Replace missing values
+C_r$RestaurantsPriceRange2[C_r$RestaurantsPriceRange2==""]<-0
+C_r[C_r==""]<-"False"
+write.csv(C_r,"Chinese_restaurant_new.csv",row.names= FALSE)
+
+
+
+
+
+# Similar method for Korean restaurants
+c_name_Korean<-c_name[grepl(pattern="Korean|Korea",business_FL)]
+Korean_paste<-paste(business_FL[[c_name_Korean[1,1]]])
+for (i in 2:length(c_name_Korean)) {
+  Korean_paste<-paste(Korean_paste,business_FL[[c_name_Korean[1,i]]])
+}
+Korean<-business_FL[with(business_FL, grepl("Korean|Korea", Korean_paste)),]
+c_restaurant<-c_name[grepl(pattern="Restaurant",Korean)]
+restaurant_paste<-paste(Korean[[c_restaurant[1,1]]])
+for (i in 2:length(c_restaurant)) {
+  restaurant_paste<-paste(restaurant_paste,Korean[[c_restaurant[1,i]]])
+}
+Korean_restaurant<-Korean[with(Korean, grepl("Restaurant", restaurant_paste)),]
+K_r<-Korean_restaurant[1:50] #Variable selection
+# Replace missing values
+K_r$RestaurantsPriceRange2[K_r$RestaurantsPriceRange2==""]<-0
+K_r[K_r==""]<-"False"
+write.csv(K_r,"Korean_restaurant_new.csv",row.names= FALSE)
+```
+
