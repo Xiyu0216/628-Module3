@@ -24,7 +24,10 @@ Korean <- read_csv("Korean_restaurant_new.csv")
 ```{r}
 barplot <- function(df) {
   ggplot(df, aes(x=stars)) +
-  geom_histogram(fill="skyblue")
+  geom_histogram(fill="lightblue", aes(y = after_stat(count / sum(count))),binwidth=.25) +
+  scale_y_continuous(labels = scales::percent) +
+  labs( x = 'Stars', y = 'Percent of Total') +
+  theme_minimal()
   
 }
 ```
@@ -33,6 +36,8 @@ barplot <- function(df) {
 ```{r}
 ui <- fluidPage(
   theme = shinytheme("flatly"),
+  navbarPage("Restaurants",
+  tabPanel("Ratings Plot",
   titlePanel("Restaurant Ratings"),
   sidebarLayout( 
     sidebarPanel(
@@ -57,14 +62,23 @@ ui <- fluidPage(
   mainPanel(
       # Output: Tabset w/ plot, summary, and table ----
       tabsetPanel(type = "tabs",
-                  tabPanel("Plot", plotOutput("barplot")),
-                  tabPanel("Summary", verbatimTextOutput("summary")),
-                  tabPanel("Table", tableOutput("table"))
+                  tabPanel("Plot", 
+                           h4("Restaunrant Star Ratings"),
+                           plotOutput("barplot")),
+                  tabPanel("Summary", verbatimTextOutput("summary"))
       ) 
     )
     
   )
-)
+),
+tabPanel("More",
+    h4("For more information, please contect:"),
+    "DUOHAN ZHANG (dzhang357@wisc.edu)", br(),
+    "SHUWEI LIU (sliu777@wisc.edu)",br(),
+    "XINYAN WANG (xwang2587@wisc.edu)",br(),
+    "XIYU HAO (xhao33@wisc.edu)"
+    )
+))
 
 server <- function(input, output) {
   # Return the requested dataset
@@ -82,8 +96,7 @@ server <- function(input, output) {
       )
   })
   output$barplot <- renderPlot({
-    barplot(current_data())
-  })
+    barplot(current_data())}, height = 500, width = 700)
   # Generate a summary of the dataset
   output$summary <- renderPrint({
     dataset <- current_data()
@@ -130,8 +143,12 @@ ui <- fluidPage(
     verbatimTextOutput("summary")
   ),
   tabPanel("More",
-    verbatimTextOutput("More")
-  )
+    h5("For more information, please contect:"),
+    "DUOHAN ZHANG (dzhang357@wisc.edu)", br(),
+    "SHUWEI LIU (sliu777@wisc.edu)",br(),
+    "XINYAN WANG (xwang2587@wisc.edu)",br(),
+    "XIYU HAO (xhao33@wisc.edu)"
+    )
 )
 )
 
@@ -148,7 +165,11 @@ server <- function(input, output) {
   output$barplot <- renderPlot({
     barplot(current_data())
   })
- 
+ # Generate a summary of the dataset
+  output$summary <- renderPrint({
+    dataset <- current_data()
+    summary(dataset$stars)
+  })
   
 }
 
