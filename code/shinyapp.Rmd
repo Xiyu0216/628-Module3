@@ -1,0 +1,141 @@
+---
+title: "Shiny app"
+author: "Xiyu Hao"
+date: "2022/12/1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(shiny)
+library(shinythemes)
+library(bslib)
+library(shinydashboard)
+
+chinese <- read_csv("Chinese_restaurant_new.csv")
+korean <- read_csv("Korean_restaurant_new.csv")
+
+```
+# barplot
+```{r}
+barplot <- function(df) {
+  ggplot(df, aes(x=stars)) +
+  geom_histogram(fill="skyblue") +
+    theme_bw()
+}
+```
+
+# app
+```{r}
+ui <- fluidPage(
+  theme = shinytheme("flatly"),
+  titlePanel("Restaurant Ratings"),
+  sidebarLayout( 
+    sidebarPanel(
+    selectInput("Delivery",
+                "Restaurants Delivery",
+                choices = unique(chinese$RestaurantsDelivery), 
+                multiple = FALSE),
+    selectInput(
+				inputId = "Reservations",
+				label = "Restaurants Reservations",
+				choices = unique(chinese$RestaurantsReservations),
+				selected = NULL,
+				multiple = FALSE,
+				selectize = FALSE
+			)
+    ),
+  
+  mainPanel(
+      # Output: Tabset w/ plot, summary, and table ----
+      tabsetPanel(type = "tabs",
+                  tabPanel("Plot", plotOutput("barplot")),
+                  tabPanel("Summary", verbatimTextOutput("summary")),
+                  tabPanel("Table", tableOutput("table"))
+      ) 
+    )
+    
+  )
+)
+
+server <- function(input, output) {
+  current_data <- reactive({
+    chinese %>%
+      filter(
+        RestaurantsDelivery %in% input$Delivery,
+        RestaurantsReservations %in% input$Reservations
+      
+      )
+  })
+  output$barplot <- renderPlot({
+    barplot(current_data())
+  })
+ 
+  
+}
+
+shinyApp(ui, server)
+```
+
+# Page
+
+```{r}
+ui <- fluidPage(
+  theme = bs_theme(version = 4, bootswatch = "minty"),
+  navbarPage("Restaurants",
+  tabPanel("Plot",
+  titlePanel("Restaurant Ratings"),
+  sidebarLayout( 
+    sidebarPanel(
+    selectInput("Delivery",
+                "Restaurants Delivery",
+                choices = unique(chinese$RestaurantsDelivery), 
+                multiple = FALSE),
+    selectInput(
+				inputId = "Reservations",
+				label = "Restaurants Reservations",
+				choices = unique(chinese$RestaurantsReservations),
+				selected = NULL,
+				multiple = FALSE,
+				selectize = FALSE
+			)
+    ),
+  
+  mainPanel(
+      plotOutput("barplot")  
+    )
+    
+  )
+  ),
+  tabPanel("Summary",
+    verbatimTextOutput("summary")
+  ),
+  tabPanel("More",
+    verbatimTextOutput("More")
+  )
+)
+)
+
+
+server <- function(input, output) {
+  current_data <- reactive({
+    chinese %>%
+      filter(
+        RestaurantsDelivery %in% input$Delivery,
+        RestaurantsReservations %in% input$Reservations
+      
+      )
+  })
+  output$barplot <- renderPlot({
+    barplot(current_data())
+  })
+ 
+  
+}
+
+shinyApp(ui, server)
+```
