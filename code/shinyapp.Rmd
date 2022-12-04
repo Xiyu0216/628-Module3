@@ -16,16 +16,16 @@ library(shinythemes)
 library(bslib)
 library(shinydashboard)
 
-chinese <- read_csv("Chinese_restaurant_new.csv")
-korean <- read_csv("Korean_restaurant_new.csv")
+Chinese <- read_csv("Chinese_restaurant_new.csv")
+Korean <- read_csv("Korean_restaurant_new.csv")
 
 ```
 # barplot
 ```{r}
 barplot <- function(df) {
   ggplot(df, aes(x=stars)) +
-  geom_histogram(fill="skyblue") +
-    theme_bw()
+  geom_histogram(fill="skyblue")
+  
 }
 ```
 
@@ -36,6 +36,8 @@ ui <- fluidPage(
   titlePanel("Restaurant Ratings"),
   sidebarLayout( 
     sidebarPanel(
+      selectInput("dataset", "Choose a dataset:", 
+                  choices = c("Chinese", "Korean")),
     selectInput("Delivery",
                 "Restaurants Delivery",
                 choices = unique(chinese$RestaurantsDelivery), 
@@ -48,6 +50,8 @@ ui <- fluidPage(
 				multiple = FALSE,
 				selectize = FALSE
 			)
+    
+    
     ),
   
   mainPanel(
@@ -63,8 +67,14 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) {
+  # Return the requested dataset
+  datasetInput <- reactive({
+    switch(input$dataset,
+           "Chinese" = Chinese,
+           "Korean" = Korean)
+  })
   current_data <- reactive({
-    chinese %>%
+    datasetInput() %>%
       filter(
         RestaurantsDelivery %in% input$Delivery,
         RestaurantsReservations %in% input$Reservations
@@ -74,7 +84,12 @@ server <- function(input, output) {
   output$barplot <- renderPlot({
     barplot(current_data())
   })
- 
+  # Generate a summary of the dataset
+  output$summary <- renderPrint({
+    dataset <- current_data()
+    summary(dataset$stars)
+  })
+  
   
 }
 
