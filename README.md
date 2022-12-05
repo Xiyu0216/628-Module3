@@ -28,3 +28,4 @@ The purpose of this project is to perform a modern statistical analysis from the
 - The two-page document that summarizes the analysis including the introduction, data cleaning, model selection and diagnostics as well as the strengths and weaknesses of the model.
 
 ### Link to Shiny App
+- https://xiyuhao.shinyapps.io/restaurant_shinyapp/
