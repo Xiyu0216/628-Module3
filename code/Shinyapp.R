@@ -67,8 +67,10 @@ ui <-shinyUI(
                           tabsetPanel(type = "tabs",
                                       tabPanel("Plot", 
                                                h4("Restaunrant Star Ratings"),
+                                               h5("The plot might be empty due to lack of related data."),
                                                plotOutput("barplot")),
-                                      tabPanel("Summary", verbatimTextOutput("summary"))
+                                      tabPanel("Summary", verbatimTextOutput("summary"),
+                                               h5("The summary might be empty due to lack of related data."))
                           ) 
                         )
                         
@@ -112,8 +114,10 @@ ui <-shinyUI(
                           tabsetPanel(type = "tabs",
                                       tabPanel("Plot", 
                                                h4("Restaunrant Star Ratings"),
+                                               h5("The plot might be empty due to lack of related data."),
                                                plotOutput("barplot2")),
-                                      tabPanel("Summary", verbatimTextOutput("summary2"))
+                                      tabPanel("Summary", verbatimTextOutput("summary2"),
+                                               h5("The summary might be empty due to lack of related data."))
                           ) 
                         )
                         
