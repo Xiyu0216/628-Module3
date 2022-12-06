@@ -1,0 +1,168 @@
+---
+title: "final-model"
+author: "Duohan Zhang"
+date: "12/3/2022"
+output: html_document
+---
+
+```{r}
+# import data
+setwd("/Users/zfg/Desktop/628-Module3-main/data")
+chi = read.csv("Chinese_restaurant_new.csv")
+kor = read.csv("Korean_restaurant_new.csv")
+```
+
+```{r}
+library(glmnet)
+# Chinese restaurant
+X_chi = chi[,-c(40,41,42,43,44,45,46,47,48,50)]
+X_chi[,1] = factor(X_chi[,1])
+X_chi[,3] = as.numeric(X_chi[,3])
+X_chi[,4] = factor(X_chi[,4])
+X_chi[,5][X_chi[,5] == "None"] = "False"
+X_chi[,5] = factor(X_chi[,5])
+X_chi[,6][X_chi[,6] == "'no'"] = "False"
+X_chi[,6][X_chi[,6] == "u'no'"] = "False"
+X_chi[,6][X_chi[,6] == "u'free'"] = "free"
+X_chi[,6][X_chi[,6] == "'free'"] = "free"
+X_chi[,6][X_chi[,6] == "u'paid'"] = "paid"
+X_chi[,6] = factor(X_chi[,6], levels = c("False", "paid", "free"))
+X_chi[,7][X_chi[,7] == "None"] = "False"
+X_chi[,7] = factor(X_chi[,7])
+X_chi[,8] = factor(X_chi[,8])
+X_chi[,9][X_chi[,9] == "None"] = "False"
+X_chi[,9] = factor(X_chi[,9], levels = c("False","True"))
+X_chi[,11] = factor(X_chi[,11])
+X_chi[,12][X_chi[,12] == "None"] = "False"
+X_chi[,12] = factor(X_chi[,12], levels = c("False","True"))
+X_chi[,14] = factor(X_chi[,14])
+X_chi[,15][X_chi[,15] == "u'none'"] = "False"
+X_chi[,15][X_chi[,15] == "u'beer_and_wine'"] = "beer_and_wine"
+X_chi[,15][X_chi[,15] == "'none'"] = "False"
+X_chi[,15][X_chi[,15] == "u'full_bar'"] = "full_bar"
+X_chi[,15][X_chi[,15] == "'full_bar'"] = "full_bar"
+X_chi[,15][X_chi[,15] == "'beer_and_wine'"] = "beer_and_wine"
+X_chi[,5][X_chi[,5] == "none"] = "False"
+X_chi[,15] = factor(X_chi[,15], levels = c("False", "beer_and_wine", "full_bar"))
+X_chi[,16] = factor(X_chi[,16])
+X_chi[,17][X_chi[,17] == "u'casual'"] = "casual"
+X_chi[,17][X_chi[,17] == "'casual'"] = "casual"
+X_chi[,17][X_chi[,17] == "u'formal'"] = "formal"
+X_chi[,17] = factor(X_chi[,17])
+X_chi[,19] = factor(X_chi[,19])
+X_chi[,21] = factor(X_chi[,21])
+X_chi[,22] = factor(X_chi[,22])
+X_chi[,23] = factor(X_chi[,23])
+X_chi[,24] = factor(X_chi[,24])
+X_chi[,25] = factor(X_chi[,25])
+X_chi[,32] = factor(X_chi[,32])
+X_chi[,33] = factor(X_chi[,33])
+X_chi[,35][X_chi[,35] == "'yes_free'"] = "yes_free"
+X_chi[,35][X_chi[,35] == "'no'"] = "False"
+X_chi[,35] = factor(X_chi[,35], levels = c("False","yes_free"))
+X_chi = X_chi[,-c(1,2,10,13,15,17,18,20,23,26,27,28,29,30,31,33,34,36,37,38,39)]
+```
+
+```{r}
+X_train = model.matrix(~., X_chi)
+Y_chi = chi[,48]
+grid = 10^seq(10,-2,length=100)
+lasso.chi = glmnet(X_train, Y_chi, alpha = 1, lambda = grid)
+```
+
+# Cross-validation to find the optimal lambda.
+```{r}
+cv.chi = cv.glmnet(X_train, Y_chi, alpha = 1)
+plot(cv.chi)
+bestlam=cv.chi$lambda.min
+```
+
+```{r}
+bestlam = 0.08
+out = glmnet(X_train, Y_chi, alpha = 1, lambda = grid)
+coeff = predict(out,type="coefficients",s=bestlam)#[1:30,]
+coeff
+```
+
+# Korean restaurants.
+```{r}
+setwd("/Users/zfg/Desktop/628-Module3-main/data")
+chi = read.csv("Korean_restaurant_new.csv")
+X_chi = chi[,-c(40,41,42,43,44,45,46,47,48,50)]
+X_chi[,1] = factor(X_chi[,1])
+X_chi[,3] = as.numeric(X_chi[,3])
+X_chi[,4] = factor(X_chi[,4])
+X_chi[,5][X_chi[,5] == "None"] = "False"
+X_chi[,5] = factor(X_chi[,5])
+X_chi[,6][X_chi[,6] == "'no'"] = "False"
+X_chi[,6][X_chi[,6] == "u'no'"] = "False"
+X_chi[,6][X_chi[,6] == "u'free'"] = "free"
+X_chi[,6][X_chi[,6] == "'free'"] = "free"
+X_chi[,6][X_chi[,6] == "u'paid'"] = "paid"
+X_chi[,6] = factor(X_chi[,6], levels = c("False", "paid", "free"))
+X_chi[,7][X_chi[,7] == "None"] = "False"
+X_chi[,7] = factor(X_chi[,7])
+X_chi[,8] = factor(X_chi[,8])
+X_chi[,9][X_chi[,9] == "None"] = "False"
+X_chi[,9] = factor(X_chi[,9], levels = c("False","True"))
+X_chi[,11] = factor(X_chi[,11])
+X_chi[,12][X_chi[,12] == "None"] = "False"
+X_chi[,12] = factor(X_chi[,12], levels = c("False","True"))
+X_chi[,14] = factor(X_chi[,14])
+X_chi[,15][X_chi[,15] == "u'none'"] = "False"
+X_chi[,15][X_chi[,15] == "u'beer_and_wine'"] = "beer_and_wine"
+X_chi[,15][X_chi[,15] == "'none'"] = "False"
+X_chi[,15][X_chi[,15] == "u'full_bar'"] = "full_bar"
+X_chi[,15][X_chi[,15] == "'full_bar'"] = "full_bar"
+X_chi[,15][X_chi[,15] == "'beer_and_wine'"] = "beer_and_wine"
+X_chi[,5][X_chi[,5] == "none"] = "False"
+X_chi[,15] = factor(X_chi[,15], levels = c("False", "beer_and_wine", "full_bar"))
+X_chi[,16] = factor(X_chi[,16])
+X_chi[,17][X_chi[,17] == "u'casual'"] = "casual"
+X_chi[,17][X_chi[,17] == "'casual'"] = "casual"
+X_chi[,17][X_chi[,17] == "u'formal'"] = "formal"
+X_chi[,17] = factor(X_chi[,17])
+X_chi[,19] = factor(X_chi[,19])
+X_chi[,21] = factor(X_chi[,21])
+X_chi[,22] = factor(X_chi[,22])
+X_chi[,23] = factor(X_chi[,23])
+X_chi[,24] = factor(X_chi[,24])
+X_chi[,25] = factor(X_chi[,25])
+X_chi[,32] = factor(X_chi[,32])
+X_chi[,33] = factor(X_chi[,33])
+X_chi[,35][X_chi[,35] == "'yes_free'"] = "yes_free"
+X_chi[,35][X_chi[,35] == "'no'"] = "False"
+X_chi[,35] = factor(X_chi[,35], levels = c("False","yes_free"))
+X_chi = X_chi[,-c(1,2,10,13,15,17,18,20,23,25,26,27,28,29,30,31,33,34,35,36,37,38,39)]
+```
+
+```{r}
+X_train = model.matrix(~., X_chi)
+Y_chi = chi[,48]
+grid = 10^seq(10,-2,length=100)
+lasso.chi = glmnet(X_train, Y_chi, alpha = 1, lambda = grid)
+```
+
+```{r}
+cv.chi = cv.glmnet(X_train, Y_chi, alpha = 1)
+plot(cv.chi)
+bestlam=cv.chi$lambda.min
+```
+
+```{r}
+bestlam = 0.08
+out = glmnet(X_train, Y_chi, alpha = 1, lambda = grid)
+coeff = predict(out,type="coefficients",s=bestlam)#[1:30,]
+#coeff[coeff != 0]
+coeff
+```
+
+
+
+
+
+
+
+
+
+
